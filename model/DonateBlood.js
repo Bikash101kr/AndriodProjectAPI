@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const donateSchema = new mongoose.Schema({
-    user: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'    
     },
@@ -34,13 +34,16 @@ const donateSchema = new mongoose.Schema({
     },
     location:{
     type: String,
-    enum: ['Point'],
     required: false
     },
     status:{
         type: String,
         required: false,
         enum: ['used', 'on the way', 'stocked on blood bank']
+    },
+    donationDate:{
+        type: String,
+        required:false
     }
 
 }, {timestamps: true});

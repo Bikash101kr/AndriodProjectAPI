@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Profile = require('./Profile');
 const userSchema = new mongoose.Schema({
     username:{
         type: String,
@@ -12,22 +12,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         
     },
-    firstName:{
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
-    phone:{
-        type: String,
-        required: true
-    },
-    
-    address:{
-        type: String,
-        required: true
+    email:{
+        type:String,
+        required: false
     },
     role:{
         type: String,
@@ -35,6 +22,11 @@ const userSchema = new mongoose.Schema({
         default: 'basic',
         enum: ['basic', 'admin']
     },
+    profile: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: Profile,
+		required: true,
+	}
 },{timestamps:true});
 
 module.exports = mongoose.model('User', userSchema)

@@ -1,13 +1,14 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-
+const router = express.Router();
+var sizeOf = require('image-size');
 // Storage
 const storage = multer.diskStorage({
     destination: './public/uploads',
     filename: (req, file, cb) => {
         let ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + Date.now() + ext);
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 // Filter
@@ -23,18 +24,15 @@ const imageFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     fileFilter: imageFilter,
-    limits: {
-        fileSize: 1024 * 1024
-    }
+    limits: { fileSize: 1728*1728 }
 });
 
-const uploadRouter = express.Router();
 
-uploadRouter.route('/')
+router.route('/')
     .post(upload.single('myFile'), (req, res, next) => {
-        res.json(req.file);
+        res.json({status: 'success', file: req.file});
     });
 
-module.exports = uploadRouter;
+module.exports = router;
 
 

@@ -1,35 +1,35 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('./upload')
 const Profile = require('../model/Profile');
+const { verifyUser } = require('../auth');
 
 router.route('/')
-.get((req, res, next) =>{
-    Profile.find({user: req.user.id})
+.get( verifyUser, (req, res, next) =>{
+    Profile.findById(req.user.profile)
     .then((profiles) => {
-        res.setHeader('Content-Type', 'application/json');
         res.json(profiles);
     }).catch(err => next(err));
 })
 .post((req, res, next) => {
-    let {email, image, dateOfBirth, gender,bloodGroup, lastDonation} = req.body;
+    const profile = {firstName, lastName, address, phone, 
+        image, dateOfBirth, gender,bloodGroup,
+         lastDonation} = req.body;
 //   \ req.user is from auth.verifyUser which is from payload. 
-    Profile.create({email, image, dateOfBirth, gender,bloodGroup, lastDonation})
+    Profile.create(profile)
     .then(profile => {
         res.status(201).json(profile);
     }).catch(err => next(err));
 })
 
-router.route('/:profile_id')
-.get((req, res, next) => {
-    Profile.findById(req.params.profile_id)
-    .then(profile => {
-        res.json(profile);
-    }).catch(err => next(err));
-})
-.put((req,res,next) => {
-    Profile.findByIdAndUpdate(req.params.profile_id, {$set: req.body},{new: true})
-    .then(profile => {
-        res.json(profile);
+.put(verifyUser, (req,res,next) => {
+    const profile = {firstName, lastName, address, phone, 
+        image, dateOfBirth, gender,bloodGroup,
+         lastDonation} = req.body;
+
+    Profile.findByIdAndUpdate(req.user.profile, {$set: profile},{new: true})
+    .then(updatedProfile => {
+        res.json(updatedProfile);
     }).catch(err => next(err));
 })
 module.exports = router;

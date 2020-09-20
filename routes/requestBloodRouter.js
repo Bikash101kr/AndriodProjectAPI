@@ -4,36 +4,34 @@ const { verifyUser, verifyAdmin } = require('../auth');
 const RequestBlood = require('../model/RequestBlood');
 
 router.route('/')
-.get((req, res, next)=>{
-    RequestBlood.find({user: req.user.id})
+.get(verifyUser, (req, res, next)=>{
+    RequestBlood.find({owner: req.user.id})
     .then(requests=> {
         res.setHeader('Content-Type', 'application/json');
         res.json(requests);
     }).catch(next);
 })
-.post((req, res, next)=> {
+.post(verifyUser,(req, res, next)=> {
     let { requirement, patientName, patientAge, 
-        bloodGroup, country, state, district,
-    city, street, hospitalName, location, needUnit,
-requirementReason, requireBefore } = req.body;
-    RequestBlood.create( { user: req.user.id, requirement, patientName, patientAge, 
-        bloodGroup, country, state, district,
-    city, street, hospitalName, location, needUnit,
-requirementReason, requireBefore })
+        bloodGroup, fullAddress,  hospitalName,  needUnit,
+requirementReason, requireBefore, requestDate } = req.body;
+    RequestBlood.create( { owner: req.user.id, requirement, patientName, patientAge, 
+        bloodGroup, fullAddress, hospitalName,  needUnit,
+requirementReason, requireBefore, requestDate })
     .then( Request => {
         res.status(201).json(Request);
 
     }).catch(err => next(err));
 })
-.delete((req, res,next) => {
-    RequestBlood.deleteMany({user: req.user.id})
+.delete(verifyUser,(req, res,next) => {
+    RequestBlood.deleteOne({owner: req.user.id})
     .then(reply=> {
         res.json(reply);
     }).catch(next);
 });
 router.route('/:request_id')
 .get((req,res,next) => {
-    RequestBlood.findById(req.params.donation_id)
+    RequestBlood.findById(req.params.request_id)
     .then(Request => {
         res.json(Request);
     }).catch(next);

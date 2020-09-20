@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
 
 const profileSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'    
+    firstName:{
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        required: false
+    lastName: {
+        type: String,
+        required: true
+    },
+    phone:{
+        type: String,
+        required: true
+    },
+    
+    address:{
+        type: String,
+        required: true
     },
     image:{
         type: String,
@@ -15,13 +24,13 @@ const profileSchema = new mongoose.Schema({
     },
     
     dateOfBirth:{
-        type: Date,
+        type: String,
         required: false
     },
     gender:{
         type: String,
         required: false,
-        enum: ['male', 'female', 'others']
+        enum: ['male', 'female', 'other']
     },
     bloodGroup:{
         type: String,
@@ -29,7 +38,7 @@ const profileSchema = new mongoose.Schema({
         enum:['A+','B+','O+','AB+','A-','B-','AB-','O-']
     },
     lastDonation:{
-        type:Date,
+        type:String,
         required:false
     }
 },{timestamps:true});

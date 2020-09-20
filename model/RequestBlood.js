@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const requestSchema = new mongoose.Schema({
-    user: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
@@ -8,7 +8,7 @@ const requestSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: false,
-        enum: ['fresh','general']
+        enum: ['fresh','stocked', 'any of above']
     },
     patientName:{
         type: String,
@@ -24,36 +24,14 @@ const requestSchema = new mongoose.Schema({
         default: false,
         enum: ['A+','B+','AB+','O+','A-','B-','AB-','O-']
     },
-    country:{
-        type:String,
-        required: true
 
-    },
-    state: { 
-        type: String,
-        required: true
-    },
-
-    district:{
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
-    street: { 
-        type: String,
-        required: true
-    },
     hospitalName:{
         type: String,
         required: true
     },
-    location:{
-    type: String,
-    enum: ['Point'],
-    required: true
+    fullAddress:{
+        type: String,
+        required: true,
     },
     needUnit:{
         type: String,
@@ -64,8 +42,12 @@ const requestSchema = new mongoose.Schema({
         required: true
     },
     requireBefore:{
-        type: Date,
+        type: String,
         required: true
+    },
+    requestDate:{
+        type: String,
+        required: false
     }
 },{timestamps:true});
 

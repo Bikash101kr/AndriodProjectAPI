@@ -12,6 +12,7 @@ const bloodBankRouter = require ('./routes/bloodBankRouter');
 const profileRouter = require ('./routes/profileRouter');
 const auth = require('./auth');
 const uploadRouter = require('./routes/upload');
+const { verifyUser } = require('./auth');
 
 const app = express();
 app.use(morgan('tiny'));
@@ -34,11 +35,11 @@ app.get('/',(req, res) => {
     res.send('Welcome, to my app');
 });
 app.use('/api/users', userRouter);
-app.use('/api/DonateBlood', auth.verifyUser, donateBloodRouter);
-app.use('/api/RequestBlood', auth.verifyUser, requestBloodRouter);
-app.use('/api/BloodBank', auth.verifyUser, bloodBankRouter );
-app.use('/api/Profile', auth.verifyUser, profileRouter)
-app.use('/api/upload', auth.verifyUser, uploadRouter);
+app.use('/api/DonateBlood',  donateBloodRouter);
+app.use('/api/RequestBlood', requestBloodRouter);
+app.use('/api/BloodBank',  bloodBankRouter );
+app.use('/api/Profiles',  profileRouter)
+app.use('/api/uploads', uploadRouter);
 app.use((req, res, next) => {
     let err = new error ('Not found');
     err.status = 404;

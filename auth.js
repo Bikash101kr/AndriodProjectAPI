@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 function verifyUser(req, res, next) {
     let authHeader = req.headers.authorization;
+    console.log(authHeader);
     if (!authHeader) {
         let err = new Error('No authentication information!');
         err.status = 401;
@@ -14,10 +15,12 @@ function verifyUser(req, res, next) {
             let err = new Error('Token cound not be found!');
             err.status = 401;
             return next(err);
-        }
-        req.user = payload;
-        console.log( req.user);
+        } else{
+            req.user = payload;
+        console.log( "verified user");
         next();
+        }
+        
     })
 }
 

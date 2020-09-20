@@ -17,7 +17,7 @@ router.post('/register', (req, res, next) => {
         });
     }
 
-    let { username, password, firstName, lastName, phone, address, role} = req.body;
+    let { username, password, email, profile, role} = req.body;
     User.findOne({username})
     .then((user) => {
         if (user) {
@@ -27,9 +27,9 @@ router.post('/register', (req, res, next) => {
         }
         bcrypt.hash(password, 10)
         .then(hashed => {
-            User.create({username, password: hashed, firstName, lastName, address, phone, role})
+            User.create({username, password: hashed, email, profile, role})
             .then(user => {
-                res.status(201).json({ user, "status": "Registration successful" });
+                res.status(201).json( `Registration of username: ${username} is done!` );
             }).catch(next);
         }).catch(next);
         
@@ -55,12 +55,9 @@ router.post('/login', (req, res, next) => {
             let payload = {
                 id: user.id,
                 username: user.username,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                address: user.address,
-                phone: user.phone,
                 role: user.role,
-                email: user.email
+                email: user.email,
+                profile: user.profile
 
             }
             jwt.sign(payload, process.env.SECRET, (err,token)=> {
@@ -69,7 +66,8 @@ router.post('/login', (req, res, next) => {
                 }
                 res.json({
                     status: 'Login Sucessful',
-                    token: `Bearer ${token}`
+                    token: `Bearer ${token}`,
+                    id: user.id
                 });
             });
             

@@ -5,30 +5,30 @@ const { verifyUser, verifyAdmin } = require('../auth');
 const { update } = require('../model/DonateBlood');
 
 router.route('/')
-.get((req, res, next)=>{
-    DonateBlood.find({user: req.user.id})
+.get(verifyUser,(req, res, next)=>{
+    DonateBlood.find({owner: req.user.id})
     .then(donations=> {
         res.setHeader('Content-Type', 'application/json');
         res.json(donations);
     }).catch(next);
 })
-.post((req, res, next)=> {
-        let {profile, weight, country, state, district, city, street, location} = req.body;
-        DonateBlood.create({profile, user: req.user.id, weight, country, state, 
-            district, city, street, location})
-    .then( Donation => {
-        res.status(201).json(Donation);
+.post(verifyUser,(req, res, next)=> {
+        let { weight, country, state, district, city, street, location, donationDate} = req.body;
+        DonateBlood.create({ owner: req.user.id,  weight, country, state, 
+            district, city, street, location, donationDate})
+    .then( donations => {
+        res.status(201).json(donations);
 
     }).catch(err => next(err));
 })
 .delete((req, res,next) => {
-    DonateBlood.deleteMany({user: req.user.id})
+    DonateBlood.deleteOne({owner: req.user.id})
     .then(reply=> {
         res.json(reply);
     }).catch(next);
 });
 router.route('/:donation_id')
-.get((req,res,next) => {
+.get(verifyUser,(req,res,next) => {
     DonateBlood.findById(req.params.donation_id)
     .then(Donation => {
         res.json(Donation);
@@ -42,7 +42,8 @@ router.route('/:donation_id')
             district: req.body.district, 
             city: req.body.city, 
             street: req.body.street, 
-            location: req.body.location }},{new: true})
+            location: req.body.location,
+            donationDate: req.body.donationDate}},{new: true})
     .then(updatedDonation => {
         res.json(updatedDonation);
 
